@@ -7,8 +7,10 @@ const crawler = new CheerioCrawler({
     requestHandler: router,
 });
 
+// Provide the scraper with a search query
 const searchQuery = "men oxfords".toLowerCase();
 
+// Add initial request based on the provided search query
 await crawler.addRequests([
     `https://www.zappos.com/${searchQuery
         .trim()
@@ -17,4 +19,5 @@ await crawler.addRequests([
     )}&p=0`,
 ]);
 
+// Run the scraper
 await crawler.run();
