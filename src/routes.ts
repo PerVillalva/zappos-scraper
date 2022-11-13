@@ -16,7 +16,7 @@ router.addDefaultHandler(async ({ enqueueLinks, log, $, request, crawler }) => {
         for (let page = 1; page < lastPage; page++) {
             await crawler.requestQueue?.addRequests([
                 {
-                    url: request.url.replace(/p\=\d+/, `p=${page}`),
+                    url: request.url.replace(/p=\d+/, `p=${page}`),
                     label: LABELS.LIST,
                 },
             ]);
