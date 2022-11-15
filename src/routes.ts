@@ -34,8 +34,6 @@ router.addDefaultHandler(async ({ enqueueLinks, log, $, request, crawler }) => {
 router.addHandler(LABELS.PRODUCT, async ({ request, $, log }) => {
     log.info(`Extracting data: ${request.url}`);
 
-    const priceElement = $("");
-
     // Define the results object based on the "Product" interface structure imported from consts.ts
     const results: Product = {
         url: request.loadedUrl,
@@ -62,9 +60,7 @@ router.addHandler(LABELS.PRODUCT, async ({ request, $, log }) => {
         results.name = $('*[itemprop~="name"]').text().trim();
         results.imgUrl = $("#default-image").attr("src");
     } else {
-        results.name = $('meta[itemprop="name"]')
-            .attr("content")
-            ?.split(" ")[1];
+        results.name = $('meta[itemprop="name"]').attr("content");
         results.imgUrl = $(
             '#stage button[data-media="image"] img[itemprop="image"]'
         ).attr("src");
