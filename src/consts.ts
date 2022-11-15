@@ -7,6 +7,7 @@ export const LABELS = {
 // 👇 Create an interface strcture with specific object property types
 export interface Product {
     url?: string;
+    imgUrl?: string;
     brand: string;
     name?: string;
     SKU: string;
