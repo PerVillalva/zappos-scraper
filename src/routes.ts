@@ -39,9 +39,7 @@ router.addHandler(LABELS.PRODUCT, async ({ request, $, log }) => {
     // Define the results object based on the "Product" interface structure imported from consts.ts
     const results: Product = {
         url: request.loadedUrl,
-        imgUrl: $(
-            '#stage button[data-media="image"] img[itemprop="image"]'
-        ).attr("src"),
+        imgUrl: "",
         brand: $('span[itemprop="brand"]').text().trim(),
         name: "",
         SKU: $('*[itemprop~="sku"]').text().trim(),
@@ -62,10 +60,14 @@ router.addHandler(LABELS.PRODUCT, async ({ request, $, log }) => {
      Products in this store have a slightly different page layout, so we have to adjust our selectors accordingly */
     if (request.url.includes("the-style-room")) {
         results.name = $('*[itemprop~="name"]').text().trim();
+        results.imgUrl = $("#default-image").attr("src");
     } else {
         results.name = $('meta[itemprop="name"]')
             .attr("content")
             ?.split(" ")[1];
+        results.imgUrl = $(
+            '#stage button[data-media="image"] img[itemprop="image"]'
+        ).attr("src");
     }
 
     // Push results to the dataset
