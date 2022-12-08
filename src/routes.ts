@@ -3,25 +3,18 @@ import { LABELS, Product } from "./consts.js";
 
 export const router = createCheerioRouter();
 
-router.addDefaultHandler(async ({ enqueueLinks, log, $, request, crawler }) => {
-    const currentPage = $('span[aria-current="true"]').text();
-    const lastPage = Number($("#searchPagination span a:last-child").text());
-
-    // Run this code only when the scraper is on the first page
-    if (currentPage === "1") {
+router.addDefaultHandler(async ({ enqueueLinks, log, $, request }) => {
+    // Print the total number of products when on the first page
+    if (request.userData.label === LABELS.START) {
         const totalProducts = $("h1 + span").text();
         log.info(totalProducts);
-
-        // Loop through the total number of pages and enqueue all store pages for the particular search query
-        for (let page = 1; page < lastPage; page++) {
-            await crawler.addRequests([
-                {
-                    url: request.url.replace(/p=\d+/, `p=${page}`),
-                    label: LABELS.LIST,
-                },
-            ]);
-        }
     }
+
+    // Loop through the total number of pages and enqueue all store pages for the particular search query
+    await enqueueLinks({
+        globs: ["https://www.zappos.com/*/.zso?t=*&p=*"],
+        label: LABELS.LIST,
+    });
 
     // Enqueue all products displayed on each visited page
     log.info(`Enqueueing product details: ${request.loadedUrl}`);
@@ -37,9 +30,9 @@ router.addHandler(LABELS.PRODUCT, async ({ request, $, log }) => {
     // Define the results object based on the "Product" interface structure imported from consts.ts
     const results: Product = {
         url: request.loadedUrl,
-        imgUrl: "",
+        imgUrl: undefined,
         brand: $('span[itemprop="brand"]').text().trim(),
-        name: "",
+        name: undefined,
         SKU: $('*[itemprop~="sku"]').text().trim(),
         inStock: !request.url.includes("oosRedirected=true"), // Check if product is in stock. If not, set inStock property to false
         onSale: false,
